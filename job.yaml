@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: populate-web-content
+spec:
+  template:
+    spec:
+      containers:
+      - name: web-content-init
+        image: busybox
+        command: ["/bin/sh", "-c"]
+        args:
+          - echo '<html><body><h1>Sample NFS Content</h1></body></html>' > /mnt/index.html;
+        volumeMounts:
+        - mountPath: /mnt
+          name: nfs-storage-volume
+      restartPolicy: OnFailure
+      volumes:
+      - name: nfs-storage-volume
+        persistentVolumeClaim:
+          claimName: nfs-pvc
